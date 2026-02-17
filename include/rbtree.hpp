@@ -1,3 +1,6 @@
+// MIT License
+// Copyright 2026 CleverElsie
+
 #ifndef ELSIE_RBTREE
 #define ELSIE_RBTREE
 #include<any> // swap()
