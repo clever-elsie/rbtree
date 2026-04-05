@@ -187,14 +187,10 @@ class rbtree{
   explicit rbtree(const Allocator& Alloc):nil(nullptr),alloc(Alloc){ clear(); }
   explicit rbtree(const Cmp& Cmp_, const Allocator& Alloc):nil(nullptr),cmp(Cmp_),alloc(Alloc){ clear(); }
 
-  ~rbtree(){
-    clear();
-    node_traits::destroy(alloc,nil);
-    node_traits::deallocate(alloc,nil,1);
-    nil=nullptr;
-  }
+  ~rbtree(){ clear_all(); }
+
   rbtree&operator=(rbtree&&rhs){
-    if(nil) this->~rbtree();
+    if(nil) clear_all();
     cur_size=rhs.cur_size, time=rhs.time;
     root=rhs.root, nil=rhs.nil;
     cmp=std::move(rhs.cmp);
@@ -206,7 +202,7 @@ class rbtree{
     return*this;
   }
   rbtree&operator=(const rbtree&rhs){
-    if(nil) this->~rbtree();
+    if(nil) clear_all();
     if constexpr(node_traits::propagate_on_container_copy_assignment)
       alloc=rhs.alloc;
     for(auto itr=rhs.begin();itr!=rhs.end();++itr)
@@ -534,6 +530,12 @@ class rbtree{
     clear(x->ch[1]);
     node_traits::destroy(alloc,x);
     node_traits::deallocate(alloc,x,1);
+  }
+  void clear_all(){
+    clear();
+    node_traits::destroy(alloc,nil);
+    node_traits::deallocate(alloc,nil,1);
+    nil=nullptr;
   }
   public:
   void clear(){
